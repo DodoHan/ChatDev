@@ -42,8 +42,17 @@ class ProjectEvaluator:
         for i in range(10):
             try:
                 print("post request ", i)
+                ''' By Lab2041
                 resp = openai.ChatCompletion.create(
                     model="gpt-3.5-turbo", 
+                    messages=[
+                        {"role": "system", "content": self.prompt}, 
+                        {"role": "user", "content": f"Project Name: {project_name}\nProject Description: {project_description}\n"}
+                    ]
+                )
+                '''
+                resp = openai.ChatCompletion.create(
+                    deployment_id="gpt35turbo", 
                     messages=[
                         {"role": "system", "content": self.prompt}, 
                         {"role": "user", "content": f"Project Name: {project_name}\nProject Description: {project_description}\n"}

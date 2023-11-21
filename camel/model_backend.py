@@ -21,6 +21,12 @@ from camel.typing import ModelType
 from chatdev.statistics import prompt_cost
 from chatdev.utils import log_and_print_online
 
+#By Lab2041
+openai.api_key = "XXXXXXXXXXXX"
+openai.api_base = "https://stanfordtown.openai.azure.com/"
+openai.api_type = "azure"
+openai.api_version = "2023-05-15"
+
 
 class ModelBackend(ABC):
     r"""Base class for different model backends.
@@ -64,15 +70,22 @@ class OpenAIModel(ModelBackend):
             "gpt-4-0613": 8192,
             "gpt-4-32k": 32768,
         }
-        num_max_token = num_max_token_map[self.model_type.value]
+        # by Lab2041
+        #num_max_token = num_max_token_map[self.model_type.value]
+        num_max_token = 4096 
         num_max_completion_tokens = num_max_token - num_prompt_tokens
         self.model_config_dict['max_tokens'] = num_max_completion_tokens
 
         try:
-            response = openai.ChatCompletion.create(*args, **kwargs, model=self.model_type.value, **self.model_config_dict)
+            #By Lab2041
+            #response = openai.ChatCompletion.create(*args, **kwargs, model=self.model_type.value, **self.model_config_dict)
+            #response = openai.ChatCompletion.create(*args, **kwargs, model="gpt-35-turbo", **self.model_config_dict)
+            response = openai.ChatCompletion.create(*args, **kwargs, deployment_id="gpt35turbo", **self.model_config_dict)
         except AttributeError:
-            response = openai.chat.completions.create(*args, **kwargs, model=self.model_type.value, **self.model_config_dict)
-
+            #By Lab2041
+            #response = openai.chat.completions.create(*args, **kwargs, model=self.model_type.value, **self.model_config_dict)
+            response = openai.chat.completions.create(*args, **kwargs, deployment_id="gpt35turbo",**self.model_config_dict)
+            
         cost = prompt_cost(
                 self.model_type.value, 
                 num_prompt_tokens=response["usage"]["prompt_tokens"], 
